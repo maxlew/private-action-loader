@@ -8897,7 +8897,7 @@ const { sync } = __webpack_require__(569);
 
 const GITHUB_TOKEN = core.getInput('repo-token', { required: true })
 const GITHUB_REPO = core.getInput('repo-name', { required: true })
-const ACTION_DIR = core.getInput('action-dit', { required: false, default: null })
+let ACTION_DIR = core.getInput('action-dit', { required: false, default: null })
 const WORKING_DIR = './.private-action'
 
 async function run () {
