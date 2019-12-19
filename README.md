@@ -18,6 +18,11 @@ This action loads and executes a private Action.  This allows private actions to
 
 **Required** The repository containing the action.  A ref can also be appended to specify an exact commit of the action (SHA, tag, or branch). Must be in the format of `{owner}/{repo}` or `{owner}/{repo}@{sha}`.
 
+### **`action-dir`**
+The folder containing the action. If you have a repository with multiple actions, you can specify the subfolder containing the action.
+e.g `actions/my-first-action`
+
+
 ---
 ## **Examples**
 ## Example usage w/ additional parameters
@@ -60,6 +65,15 @@ This action loads and executes a private Action.  This allows private actions to
       with:
         repo-token: ${{ secrets.REPO_TOKEN }}
         repo-name: some-org/super-secret-action@v1
+```
+
+## Example usage w/ actions folder
+``` yaml
+    - uses: invisionapp/private-action-loader@v1
+      with:
+        repo-token: ${{ secrets.REPO_TOKEN }}
+        repo-name: some-org/our-secret-actions@v1
+        action-dir: actions/the-best-action
 ```
 
 ## Example usage w/ Output

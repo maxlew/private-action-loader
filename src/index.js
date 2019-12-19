@@ -7,6 +7,7 @@ const { sync } = require('rimraf');
 
 const GITHUB_TOKEN = core.getInput('repo-token', { required: true })
 const GITHUB_REPO = core.getInput('repo-name', { required: true })
+const ACTION_DIR = core.getInput('action-dit', { required: false, default: null })
 const WORKING_DIR = './.private-action'
 
 async function run () {
@@ -34,23 +35,29 @@ async function run () {
     await exec.exec(`git checkout ${sha}`, null, { cwd: WORKING_DIR })
   }
 
+  if (ACTION_DIR) {
+    ACTION_DIR = `${WORKING_DIR}/${ACTION_DIR}`
+  } else {
+    ACTION_DIR = WORKING_DIR
+  }
+
   core.info('Reading action.yml')
-  const actionFile = readFileSync(`${WORKING_DIR}/action.yml`, 'utf8')
+  const actionFile = readFileSync(`${ACTION_DIR}/action.yml`, 'utf8')
   const action = parse(actionFile)
-  
+
   if (!(action && action.name && action.runs && action.runs.main)) {
     throw new Error('Malformed action.yml found')
   }
 
   core.endGroup('Cloning private action')
-  
+
   core.startGroup('Input Validation')
   setInputs(action)
   core.endGroup('Input Validation')
 
   core.info(`Starting private action ${action.name}`)
   core.startGroup(`${action.name}`)
-  await exec.exec(`node ${join(WORKING_DIR, action.runs.main)}`)
+  await exec.exec(`node ${join(ACTION_DIR, action.runs.main)}`)
   core.endGroup(`${action.name}`)
 
   core.info(`Cleaning up action`)
